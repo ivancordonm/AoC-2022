@@ -13,7 +13,7 @@ fun main() {
 
         )
 
-    val chooseMap = mapOf(
+    val choiceMap = mapOf(
         Pair("A", "X") to Pair("A", "Z"),
         Pair("A", "Y") to Pair("A", "X"),
         Pair("A", "Z") to Pair("A", "Y"),
@@ -41,7 +41,7 @@ fun main() {
         Z -> win
      */
     fun part2(input: List<String>) =
-        input.mapNotNull { scoreMap[chooseMap[Pair(it.split(" ").first(), it.split(" ").last())]] }.sum()
+        input.mapNotNull { scoreMap[choiceMap[Pair(it.split(" ").first(), it.split(" ").last())]] }.sum()
 
 
     val testInput = readInput("Day02_test")
