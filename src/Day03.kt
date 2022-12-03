@@ -1,26 +1,14 @@
 fun main() {
 
-    fun part1(input: List<String>): Int {
-        var sum = 0
-        for(line in input) {
-            val (firstFalf, secondHalf) =  line.take(line.length/2) to line.substring(line.length/2)
-            val value = firstFalf.toSet().intersect(secondHalf.toSet()).first().getValue()
-            sum += value
-        }
-        return sum
-    }
-
-
-    fun part2(input: List<String>) : Int {
-        val chunkedList = input.chunked(3)
-        var sum = 0
-        for (chunk in chunkedList) {
-            val value = chunk[0].toSet().intersect(chunk[1].toSet().intersect(chunk[2].toSet())).first().getValue()
-            sum += value
+    fun part1(input: List<String>) =
+        input.fold(0) { acc, it ->
+            acc + it.take(it.length / 2).toSet().intersect(it.substring(it.length / 2).toSet()).first().getValue()
         }
 
-        return sum
-    }
+    fun part2(input: List<String>) =
+        input.chunked(3).fold(0) { acc, triple ->
+            acc + triple[0].toSet().intersect(triple[1].toSet().intersect(triple[2].toSet())).first().getValue()
+        }
 
 
     val testInput = readInput("Day03_test")
