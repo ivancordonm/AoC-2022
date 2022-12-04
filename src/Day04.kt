@@ -29,5 +29,4 @@ fun main() {
 private fun Pair<Int, Int>.isFully(other: Pair<Int, Int>) =
     (first <= other.first && second >= other.second) || (other.first <= first && other.second >= second)
 
-private fun Pair<Int, Int>.isPartial(other: Pair<Int, Int>) = (first..second).toSet().intersect(
-    (other.first..other.second).toSet()).isNotEmpty()
+private fun Pair<Int, Int>.isPartial(other: Pair<Int, Int>) = (first..second).any { it in (other.first..other.second)}
