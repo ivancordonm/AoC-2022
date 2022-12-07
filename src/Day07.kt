@@ -1,39 +1,28 @@
-import java.util.*
-
 fun main() {
-
-    fun List<String>.path() = fold("") { acc, elem -> "$acc/$elem" }
 
     fun dirSizes(commands: List<String>): Map<String, Int> {
 
         val sizes = mutableMapOf<String, Int>()
-        val stack = Stack<String>()
 
+        var cwd = ""
         for (command in commands) {
             val splitCommand = command.split(" ")
-            when (splitCommand[1]) {
-                "cd" -> {
-                    if (splitCommand[2] == "..") stack.pop()
-                    else {
-                        stack.push(splitCommand[2])
-                        val idx = stack.toList().path()
-                        sizes[idx] = 0
-                    }
+            if (splitCommand[1] == "cd") {
+                cwd = when (splitCommand[2]) {
+                    ".." -> cwd.substringBeforeLast("/")
+                    "/" -> "/"
+                    else -> "$cwd/${splitCommand[2]}"
                 }
-
-                "ls" -> continue
-                else -> {
-                    if (splitCommand[0] != "dir") {
-                        val sz = splitCommand[0].toInt()
-                        for (i in 1..stack.size) {
-                            val idx = stack.take(i).path()
-                            sizes[idx] = sizes[idx]!! + sz
-                        }
-                    }
+            } else if ("\\d+".toRegex().matches(splitCommand[0])) {
+                val sz = splitCommand[0].toInt()
+                var dir = cwd
+                while (true) {
+                    sizes[dir] = sizes.getOrElse(dir) { 0 } + sz
+                    if (dir == "/") break
+                    dir = dir.substringBeforeLast("/")
                 }
             }
         }
-
         return sizes.toMap()
     }
 
@@ -44,11 +33,10 @@ fun main() {
     }
 
 
-
     fun part2(input: List<String>): Int {
 
         val sizes = dirSizes(input)
-        val rescue = 30000000 - 70000000 + sizes["//"]!!
+        val rescue = 30000000 - 70000000 + sizes.getValue("/")
 
         return (sizes.toList().filter { it.second >= rescue }.minByOrNull { it.second }!!.second)
     }
