@@ -21,11 +21,11 @@ fun main() {
 
     fun part2(input: List<String>): Int {
 
-        fun countTreesLower(current: Int, trees: List<Int>): Int {
+        fun List<Int>.countTreesLower(): Int {
             var count = 0
-            for(tree in trees) {
+            for(tree in drop(1)) {
                 count++
-                if(current <= tree) break
+                if(first() <= tree) break
             }
             return count
         }
@@ -37,10 +37,10 @@ fun main() {
 
         for (i in 1..input.size - 2)
             for (j in 1..input.size - 2) {
-                var partialMaxTrees  = countTreesLower(matrix[i][j],transpose[j].take(i).reversed())
-                partialMaxTrees *=  countTreesLower(matrix[i][j],transpose[j].takeLast(input.size - i - 1))
-                partialMaxTrees *=  countTreesLower(matrix[i][j],matrix[i].take(j).reversed())
-                partialMaxTrees *=  countTreesLower(matrix[i][j],matrix[i].takeLast(input.size - j - 1))
+                val partialMaxTrees = transpose[j].take(i + 1).reversed().countTreesLower() *
+                        transpose[j].takeLast(input.size - i).countTreesLower() *
+                        matrix[i].take(j + 1).reversed().countTreesLower() *
+                        matrix[i].takeLast(input.size - j).countTreesLower()
                 if(partialMaxTrees > maxTrees) maxTrees = partialMaxTrees
             }
         return maxTrees
