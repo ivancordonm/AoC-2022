@@ -28,6 +28,16 @@ fun main() {
         return visited.size
     }
 
+    fun printBoard(knots: MutableList<Pair<Int, Int>>) {
+        for (row in (0..10).reversed()) {
+            for (col in 0..10) {
+                if (Pair(row, col) in knots) print("${knots.indexOf(Pair(row, col))} ")
+                else print(". ")
+            }
+            println()
+        }
+        println()
+    }
 
     fun part2(input: List<String>): Int {
 
@@ -35,6 +45,7 @@ fun main() {
         val visited = mutableSetOf(0 to 0)
 
         for (line in input) {
+            printBoard(knots)
             val (direction, steps) = line.split(" ")
             for (step in 1..steps.toInt()) {
                 val prev = knots.toMutableList()
@@ -45,10 +56,19 @@ fun main() {
                     "L" -> knots[0] = knots[0].first to knots[0].second - 1
                 }
 
-                if(!knots[1].isTouching(knots.first())) {
+                if (!knots[1].isTouching(knots.first())) {
                     for (index in knots.indices.drop(1)) {
                         if (!knots[index].isTouching(knots[index - 1])) {
-                            knots[index] = prev[index - 1]
+                            if (knots[index].isDiagonal(knots[index - 1])) {
+                                val tmp = listOf(
+                                    1 to 1,
+                                    1 to -1,
+                                    -1 to 1,
+                                    -1 to -1
+                                ).map { it.first + knots[index].first to it.second + knots[index].second }
+                                    .first { p -> p.isTouching(knots[index - 1]) }
+                                knots[index] = tmp
+                            } else knots[index] = prev[index - 1]
                         }
                     }
                 }
@@ -64,14 +84,17 @@ fun main() {
     val input = readInput("Day09")
 
 //    part1(testInput)
-    println(part1(testInput))
-    check(part1(testInput) == 13)
-    println(part1(input))
+//    println(part1(testInput))
+//    check(part1(testInput) == 13)
+//    println(part1(input))
 
     println(part2(testInput))
     check(part2(testInput) == 1)
-    println(part2(input))
+//    println(part2(input))
 }
 
-private  fun Pair<Int, Int>.isTouching(h: Pair<Int, Int>) =
+private fun Pair<Int, Int>.isTouching(h: Pair<Int, Int>) =
     (h.first - first).absoluteValue <= 1 && (h.second - second).absoluteValue <= 1
+
+private fun Pair<Int, Int>.isDiagonal(h: Pair<Int, Int>) =
+    h.first != first && h.second != second
