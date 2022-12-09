@@ -29,10 +29,21 @@ fun main() {
     }
 
     fun printBoard(knots: MutableList<Pair<Int, Int>>) {
-        for (row in (0..10).reversed()) {
-            for (col in 0..10) {
-                if (Pair(row, col) in knots) print("${knots.indexOf(Pair(row, col))} ")
-                else print(". ")
+        for (row in (0..20).reversed()) {
+            for (col in 0..25) {
+                if (Pair(row, col) in knots) print("${knots.indexOf(Pair(row, col))}")
+                else print(".")
+            }
+            println()
+        }
+        println()
+    }
+
+    fun printTailBoard(visited: MutableSet<Pair<Int, Int>>) {
+        for (row in (0..20).reversed()) {
+            for (col in 0..25) {
+                if (Pair(row, col) in visited) print("#")
+                else print(".")
             }
             println()
         }
@@ -41,41 +52,48 @@ fun main() {
 
     fun part2(input: List<String>): Int {
 
-        val knots = MutableList(10) { 0 to 0 }
-        val visited = mutableSetOf(0 to 0)
-
+        val knots = MutableList(10) { 5 to 11 }
+        val visited = mutableSetOf(5 to 11)
+//        printBoard(knots)
         for (line in input) {
-            printBoard(knots)
             val (direction, steps) = line.split(" ")
             for (step in 1..steps.toInt()) {
-                val prev = knots.toMutableList()
                 when (direction) {
                     "U" -> knots[0] = knots[0].first + 1 to knots[0].second
                     "D" -> knots[0] = knots[0].first - 1 to knots[0].second
                     "R" -> knots[0] = knots[0].first to knots[0].second + 1
                     "L" -> knots[0] = knots[0].first to knots[0].second - 1
                 }
-
+//                printBoard(knots)
                 if (!knots[1].isTouching(knots.first())) {
                     for (index in knots.indices.drop(1)) {
                         if (!knots[index].isTouching(knots[index - 1])) {
                             if (knots[index].isDiagonal(knots[index - 1])) {
-                                val tmp = listOf(
+                                knots[index] = listOf(
                                     1 to 1,
                                     1 to -1,
                                     -1 to 1,
                                     -1 to -1
                                 ).map { it.first + knots[index].first to it.second + knots[index].second }
                                     .first { p -> p.isTouching(knots[index - 1]) }
-                                knots[index] = tmp
-                            } else knots[index] = prev[index - 1]
+                            } else {
+                                knots[index] = listOf(
+                                    1 to 0,
+                                    0 to -1,
+                                    0 to 1,
+                                    -1 to 0
+                                ).map { it.first + knots[index].first to it.second + knots[index].second }
+                                    .first { p -> p.isTouching(knots[index - 1]) }
+                            }
                         }
                     }
+                    visited.add(knots.last())
                 }
-                visited.add(knots.last())
+//                printBoard(knots)
             }
-        }
 
+        }
+//        printTailBoard(visited)
         return visited.size
     }
 
@@ -83,14 +101,13 @@ fun main() {
     val testInput2 = readInput("Day09_test2")
     val input = readInput("Day09")
 
-//    part1(testInput)
-//    println(part1(testInput))
-//    check(part1(testInput) == 13)
-//    println(part1(input))
+    println(part1(testInput))
+    check(part1(testInput) == 13)
+    println(part1(input))
 
-    println(part2(testInput))
-    check(part2(testInput) == 1)
-//    println(part2(input))
+    println(part2(testInput2))
+    check(part2(testInput2) == 36)
+    println(part2(input))
 }
 
 private fun Pair<Int, Int>.isTouching(h: Pair<Int, Int>) =

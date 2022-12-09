@@ -22,14 +22,12 @@ fun main() {
     fun part2(input: List<String>): Int {
 
         fun List<Int>.countTreesLower(): Int {
-//            var count = 0
-//            for(tree in drop(1)) {
-//                count++
-//                if(first() <= tree) break
-//            }
-//            return count
-            val e = indexOf(drop(1).find { elem -> elem <= first() })?: 1
-            return e
+            var count = 0
+            for(tree in drop(1)) {
+                count++
+                if(first() <= tree) break
+            }
+            return count
         }
 
         val matrix = input.map { it.map { elem -> elem.digitToInt() } }
