@@ -24,7 +24,7 @@ fun main() {
 
     fun printSprite(cycle: Int, x: Int) {
         val position = cycle.mod(40) - 1
-        if(cycle.mod(40) == 0) println()
+        if(position.mod(40) == 0) println()
         if(position in x-1..x+1) print("# ") else print(". ")
     }
 
