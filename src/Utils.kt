@@ -8,6 +8,9 @@ import java.security.MessageDigest
 fun readInput(name: String) = File("src", "$name.txt")
     .readLines()
 
+fun readInputByGroups(name: String) = File("src", "$name.txt")
+    .readText().split("\n\n")
+
 fun readInputToInt(name: String) = File("src", "$name.txt")
     .readLines().map { it.toInt() }
 
