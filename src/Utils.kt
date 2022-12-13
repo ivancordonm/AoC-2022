@@ -9,7 +9,7 @@ fun readInput(name: String) = File("src", "$name.txt")
     .readLines()
 
 fun readInputByGroups(name: String) = File("src", "$name.txt")
-    .readText().split("\n\n")
+    .readText().split("\r\n\r\n|\n\n".toRegex())
 
 fun readInputToInt(name: String) = File("src", "$name.txt")
     .readLines().map { it.toInt() }
