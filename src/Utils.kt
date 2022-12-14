@@ -1,7 +1,39 @@
 import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
+import kotlin.math.min
 
+
+sealed class Item : Comparable<Item> {
+    data class Values(
+        val values: MutableList<Item>
+    ) : Item() {
+
+        override fun compareTo(other: Item): Int {
+            when (other) {
+                is Values -> {
+                    for (i in 0..min(values.lastIndex, other.values.lastIndex)) {
+                        val result = values[i].compareTo(other.values[i])
+                        if (result != 0) return result
+                    }
+                    return values.lastIndex - other.values.lastIndex
+                }
+
+                is Value -> return compareTo(Values(mutableListOf(other)))
+            }
+        }
+    }
+
+    data class Value(
+        val value: Int
+    ) : Item() {
+
+        override fun compareTo(other: Item): Int = when (other) {
+            is Value -> this.value - other.value
+            is Values -> Values(mutableListOf(this)).compareTo(other)
+        }
+    }
+}
 /**
  * Reads lines from the given input txt file.
  */
